@@ -1,0 +1,573 @@
+BODY {
+    margin: 0;
+    font-family: sans-serif;
+    font-size: 11pt;
+    background: #fff;
+    color: black;
+    overflow-y: scroll;
+}
+
+HEADER {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: #ddd;
+    z-index: 99;
+    border-bottom: 1px solid black;
+}
+
+FORM {
+    margin: 0;
+    padding: 0;
+}
+
+/* Playback status **************************************************/
+.playStatus {
+    padding: 0.3em;
+    overflow: hidden;
+    position: relative;         /* To allow absolute positioning inside */
+}
+
+.playerMetaTitle {
+    font-weight: bold;
+}
+.playerMetaPageTitle {
+    display: none;
+}
+.playerMetaTitle, .playerMetaArtist, .playerMetaAlbum, .playerControls {
+    overflow: hidden;
+    white-space: nowrap;
+}
+.playerMetadata A {             /* Metadata hyperlink */
+    color: inherit;
+    text-decoration: underline;
+}
+
+.playerCover {
+    width: 6em;
+    height: 6em;
+    margin-right: 0.3em;
+    float: left;
+    /* Centering */
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+}
+/* Magic incantation for centering:
+   https://www.brunildo.org/test/img_center.html
+   https://css-tricks.com/centering-in-the-unknown/
+*/
+.playerCover::before {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+.playerCover IMG {
+    max-width: 100%;
+    max-height: 100%;
+    vertical-align: middle;
+}
+
+.playerControls {
+    position: absolute;
+    bottom: 0.3em;
+    left: 6em;
+    right: 0.3em;
+    margin-left: 0.6em;
+}
+.playerControls BUTTON {
+    float: left;
+    margin-right: 0.3em;
+    overflow: hidden;
+    border: 1px solid black;
+    padding: 0;
+    text-align: center;
+    width: 2em;
+    height: 2em;
+    font-size: 100%;
+    background: #eee;
+}
+.playerControls .playerControl-time, .playerControls .playerControl-range {
+    float: left;
+    height: 2em;
+    margin: 1px 0;
+}
+.playerControls .playerControl-time {
+    line-height: 2em;
+    min-width: 16ex;
+}
+.playerControls .playerControls-left { float: left }
+.playerControls .playerControl-range { float: right }
+
+/* Change display (button label) based on playback state */
+.player-playing .playerControl-ifPaused, .playerControl-ifPlaying {
+    display: none !important;
+}
+.player-playing .playerControl-ifPlaying {
+    display: inherit !important;
+}
+
+/* Custom styling for range controls ********************************/
+/* https://css-tricks.com/styling-cross-browser-compatible-range-inputs-css/ */
+
+/* Style initialziation */
+
+input[type=range] {
+    -webkit-appearance: none; /* Hide slider so custom slider replaces it */
+    /* width: 100%; */ /* Specific width required for Firefox (see script). */
+    background: transparent;      /* Otherwise white in Chrome */
+}
+input[type=range]:focus {
+    outline: none; /* Remove the focus border so we can replace it. */
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+}
+
+input[type=range]::-ms-track {
+    width: 100%;
+    cursor: pointer;
+
+    /* Hides the slider so custom styles can be added */
+    background: transparent;
+    border-color: transparent;
+    color: transparent;
+}
+
+/* Thumb theming for WebKit */
+input[type=range]::-webkit-slider-thumb {
+    border: 1px solid #000000;
+    border-radius: 0;
+    background: #eee;
+    height: 1.5em;
+    width: 12px; /*1em*/
+    cursor: pointer;
+
+    margin-top: -0.7em; /* Chrome needs margin; automatic in Firefox and IE */
+}
+input[type=range]:focus::-webkit-slider-thumb {
+    outline: black dotted thin;
+}
+
+/* All the same stuff for Firefox */
+input[type=range]::-moz-range-thumb {
+    border: 1px solid #000000;
+    border-radius: 0;
+    background: #eee;
+    height: 1.5em;
+    width: 12px; /*1em*/
+    cursor: pointer;
+}
+input[type=range]:focus::-moz-range-thumb {
+    outline: black dotted thin;
+}
+input[type=range]::-moz-focus-outer {
+    border: 0;
+}
+
+
+/* All the same stuff for IE */
+input[type=range]::-ms-thumb {
+    border: 1px solid #000000;
+    border-radius: 0;
+    background: #eee;
+    height: 1.5em;
+    width: 12px; /*1em*/
+    cursor: pointer;
+}
+input[type=range]:focus::-ms-thumb {
+    outline: black dotted thin;
+}
+
+/* Track styles */
+input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 0.3em;
+    cursor: pointer;
+    background: transparent;
+    border-radius: 0.15em;
+    border: 1px solid black;
+}
+
+input[type=range]::-moz-range-track {
+    width: 100%;
+    height: 0.3em;
+    cursor: pointer;
+    background: transparent;
+    border-radius: 0.15em;
+    border: 1px solid black;
+}
+
+input[type=range]::-ms-track {
+    height: 0.3em;
+    border-width: 16px 0;
+}
+input[type=range]::-ms-fill-lower {
+    background: transparent;
+    border-radius: 0.15em;
+    border: 1px solid black;
+}
+input[type=range]::-ms-fill-upper {
+    background: transparent;
+    border-radius: 0.15em;
+    border: 1px solid black;
+}
+
+/* Navigation *******************************************************/
+
+.nav {
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid black;
+    margin: -1px 0;
+}
+.nav::after {
+    content: '';
+    display: block;
+    clear: both;
+}
+.nav A {
+    color: black;
+    text-decoration: none;
+}
+.nav LI {
+    float: left;
+    list-style: none;
+    padding: 0.3em 0.3em;
+    border-right: 1px solid black;
+    overflow: hidden;
+    white-space: nowrap;
+    /* text-overflow: ellipsis; */
+}
+.nav LI.nav-active {
+    background: white;
+    border-bottom: 1px solid white;
+    margin-bottom: -1px;
+}
+.nav LI.nav-nowplaying {
+    margin-top: -1px;
+    border-top: 1px solid #ddd;
+}
+.nav .nav-logo {
+    width: 6em;
+}
+.nav .nav-nowplaying.nav-active {
+    background: linear-gradient(180deg, #ddd, white);
+}
+.nav LI.disabled-rule.nav-nowplaying + LI {
+    /* Spacer/gap after "Now Playing" tab */
+    margin-left: 2em;
+    border-left: 1px solid black;
+}
+.nav LI INPUT {
+    border-width: 0 0 1px;
+    border-style: dotted;
+    border-color: black;
+    font-family: inherit;
+    font-size: inherit;
+    background: transparent;
+    color: black;
+    padding: 0;
+    margin-bottom: -1px;
+}
+.nav LI.nav-search {
+    float: right;
+    border-left: 1px solid black;
+    border-right-width: 0;
+}
+
+/* triangular breadcrumbs adapted from https://css-tricks.com/triangle-breadcrumbs/ */
+.nav li.breadcrumb a {
+    position: relative;
+    display: inline-block;
+}
+.nav li.breadcrumb a {
+    margin-right: 1.0em;
+}
+.nav li.breadcrumb a:last-child {
+    margin-right: 0;
+}
+.nav li.breadcrumb a::after,
+.nav li.breadcrumb a::before {
+    content: " ";
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 0.6em solid transparent; /* Go big on the size, and let overflow hide */
+    border-bottom: 0.6em solid transparent;
+    position: absolute;
+    top: 50%;
+    margin-top: -0.6em;
+    left: 100%;
+}
+.nav li.breadcrumb a::before {
+    border-left: 0.6em solid black;
+    margin-left: 3px;
+    z-index: 1;
+}
+.nav li.breadcrumb a::after {
+    border-left: 0.6em solid #ddd;
+    margin-left: 2px;
+    z-index: 2;
+}
+.nav li.breadcrumb.nav-active a::after {
+    /* When tab is active, use white background for arrow */
+    border-left-color: white;
+}
+.nav li.breadcrumb a:last-child::before,
+.nav li.breadcrumb a:last-child::after {
+    border: 0;                  /* No arrow after last item */
+}
+
+/* Responsive conversion of tab bar into menu */
+.nav .nav-icon, .nav .nav-menu-icon, .nav .nav-close-icon {
+    float: right !important;
+    display: none;
+}
+.nav-toggle {
+    display: none;
+}
+@media (max-width: 880px) {
+    .nav-toggle:checked + .nav {
+        position: fixed;
+        width: 100%;
+        background: #ddd;
+        border-bottom: 1px solid black;
+    }
+    .nav-toggle:not(:checked) + .nav LI {
+        display: none;
+        border-width: 0 !important;
+        background: #ddd !important;
+        margin: 0 !important;
+    }
+    .nav-toggle:not(:checked) + .nav .nav-logo,
+    .nav-toggle:not(:checked) + .nav .nav-active:not(.nav-nowplaying),
+    .nav-toggle + .nav LI.nav-icon,
+    .nav-toggle:not(:checked) + .nav .nav-menu-icon,
+    .nav-toggle:checked + .nav .nav-close-icon {
+        display: block;
+        width: auto;
+    }
+    .nav-toggle:checked + .nav LI {
+        float: none;
+        margin: 0 0 0.5em;
+        border-width: 0 !important;
+        max-width: 100% !important;
+    }
+    .nav-toggle:checked + .nav LI.nav-active {
+        background: white;
+    }
+
+    .nav-toggle:not(:checked) + .nav li.breadcrumb a::after {
+        border-left: 0.6em solid #ddd;
+    }
+
+    .playerControl-time {
+        font-size: 80%;
+        line-height: 2.5em !important;
+    }
+    @media (max-width: 400px) {
+        .playerControl-time { min-width: 0 !important; }
+        .playerControl-range { display: none !important }
+    }
+}
+
+/* Page body ********************************************************/
+#body ol {
+    margin: 0;
+    padding: 0;
+}
+#body ol li {
+    border-bottom: 1px dotted black;
+    padding: 0.3em 1%;
+    list-style: none;
+    /*white-space: nowrap;*/
+}
+#body ol li:last-child {
+    /* border-bottom-color: transparent; */
+    margin-bottom: 1.5em;         /* For link-hover statusbar */
+}
+
+/* Columns */
+#body ol li .col {
+    float: left; /* display: inline-block; vertical-align: middle; */
+    margin-right: 0.3em;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+#body ol li .row-flag {
+    width: 1.2em;
+}
+#body ol li .row-tracknumber {
+    width: 2.5em;
+    color: #444;
+    text-align: right;
+}
+#body ol li .row-title {
+    width: 32%;
+}
+#body ol li .row-artist {
+    width: 32%;
+}
+#body ol li .row-album {
+    width: 31%;
+}
+#body ol li .row-title-wide {
+    width: 64%;
+    margin-right: 0.6em; /* Extra margin to make up for missing column */
+}
+#body .row-solo {
+    min-width: 90%;
+}
+#body ol li a {                 /* Metadata hyperlink */
+    color: inherit;
+    text-decoration: underline;
+}
+#body OL li {
+    overflow: hidden;           /* clear */
+}
+
+/* Grouped rows */
+#body .row-group {
+    margin-top: 1em;
+    border: 0;
+    padding-right: 0;
+}
+#body .row-group IMG.rowCover {
+    float: left;
+    width: 20%;
+    border: 0;
+}
+#body .row-group H2 {
+    margin: 0 0 0.5em 0;
+    font-size: 1.2em;
+}
+#body .row-group .rows, #body .row-page.page-browseHome OL {
+    margin-left: 20%;
+    padding: 0 1em;
+}
+#body .row-group .row-title {
+    width: 45%;
+}
+#body .row-group .row-artist {
+    width: 40%;
+}
+#body .row-group H2 A {         /* Metadata hyperlink */
+    color: inherit;
+    text-decoration: none;
+}
+
+/* Pages */
+#body .row-page {
+    border-bottom-width: 0;
+}
+
+#body .row-page.page-browseHome LI A {
+    font-weight: bold;
+}
+#body .row-page H1 {
+    margin: 0 0 0.5em 0;
+    font-size: 2em;
+}
+#body .row-page.page-browseHome IMG.rowCover {
+    float: left;
+    width: 20%;
+    border: 0;
+}
+#body .row-page.page-browseHome OL {
+    max-width: 60%;
+}
+#body .row-page .row-page-block {
+    margin-left: 20%;
+    padding: 0 1em;
+}
+/* Logo removal option for home page */
+#body .row-page.page-browseHome.page-hideLogo IMG.rowCover {
+    display: none;
+}
+#body .row-page.page-browseHome.page-hideLogo > * {
+    margin-left: 0;
+}
+
+/* Row flags and special row formating */
+/*#body ol li:not(.row-nowplaying) A:hover .row-flag-hover {
+    display: inline;
+}
+*/
+#body ol li.row-nowplaying A:not(:hover) .row-flag-hover {
+    display: none;
+}
+#body ol li:not(.row-nowplaying) A:not(:hover) .row-flag-hover {
+    color: #ccc;
+}
+#body ol li a.row-play {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* Now playing row */
+#body ol li.row A:hover .row-flag-nowplaying {
+    display: none !important;
+}
+#body ol li.row .row-flag .row-flag-nowplaying {
+    display: none;
+}
+#body ol li.row-nowplaying {
+    background: #ddd;
+}
+#body ol li.row-nowplaying A:not(:hover) .row-flag-nowplaying {
+    display: inline !important;
+}
+/* Special rows (errors and status messages) */
+#body li.row-special {
+    color: #444;
+    font-style: italic;
+}
+#body li.row-error {
+    background: #faa;
+}
+#body li .row-loading-retry {
+    font-style: normal;
+    text-decoration: underline;
+    padding-left: 1em;
+}
+
+
+/* Responsive support */
+@media (max-width: 880px) {
+    #body ol li .col:not(.row-flag) {
+        min-width: auto !important;
+        width: auto !important;
+        display: block;
+        font-size: 80%;
+        float: none;
+    }
+    #body OL li .row-flag {
+        float: left;
+        height: 2.1em;
+        font-size: 150%;
+    }
+    #body OL .row-group li .row-flag {
+        height: 1.4em;     /* Grouped rows have less per-track data */
+    }
+    #body OL li.row-asdirectory .row-flag, #body OL li.row-special .row-flag {
+        height: auto;
+    }
+    #body ol li .row-tracknumber {
+        float: left !important;
+        padding-top: 0.15em;
+    }
+    #body OL li .row-title, #body OL li .row-title-wide {
+        font-weight: bold;
+        font-size: 100%;
+    }
+    #body .row-group .rows {
+        padding: 0 0 0 0.3em;
+    }
+    #body li .row-loading-retry {
+        padding-left: 0;
+    }
+}

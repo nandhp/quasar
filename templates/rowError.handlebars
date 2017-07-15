@@ -1,0 +1,9 @@
+<li class="row-special row-error">
+  <span class="col row-flag"><i class="fa fa-exclamation-triangle"></i></span>
+  <span class="col">
+    {{#if error}}{{error}}{{else}}An error occurred{{/if}}
+  </span>
+  {{#if retry}}
+    <span class="col"><a href="#" class="row-loading-retry">Retry</a></span>
+  {{/if}}
+</li>

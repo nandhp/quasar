@@ -1,0 +1,23 @@
+<li class="row" data-quasar-listing-index="{{index}}">
+  <a href="{{trackPath track 'filename'}}" class="row-play">
+    <span class="col row-flag">
+      <i class="fa fa-volume-up row-flag-nowplaying"></i>
+      <i class="fa fa-play row-flag-hover"></i>
+      &nbsp;
+    </span>
+    {{#if group}} {{!-- Include track number in group-by-album --}}
+      <span class="col row-tracknumber">{{#if track.tracknumber}}{{track.tracknumber}}.{{else}}&nbsp;{{/if}}</span>
+    {{/if}}
+    <span class="col {{#if track.artist}}row-title{{else}}row-title-wide{{/if}}">
+      {{#if track.title}}{{track.title}}{{else}}{{decodeURIComponent track.filename}}{{/if}}
+    </span>
+  </a>
+  {{#if track.artist}}
+    <span class="col row-artist">
+      <a href="{{artistUrl}}">{{track.artist}}</a>
+    </span>
+  {{/if}}
+  {{#unless group}}
+    <span class="col row-album"><a href="{{albumUrl}}">{{#if track.album}}{{track.album}}{{else if 0}}/{{decodeURIComponent track.directory}}{{else}}(No album){{/if}}</a></span>
+  {{/unless}}
+</li>

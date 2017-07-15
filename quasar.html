@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Quasar</title>
+    <link rel="stylesheet" type="text/css" href="quasar.css">
+    <link rel="stylesheet" type="text/css"
+          href="Font-Awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="apple-touch-icon-precomposed" sizes="180x180"
+          type="image/png" href="/apple-touch-icon-precomposed.png">
+    <link rel="icon" sizes="180x180"
+          type="image/png" href="/quasar.180.png">
+    <link rel="icon" sizes="64x64"
+          type="image/x-icon" href="/quasar.64.png">
+    <link rel="icon" sizes="48x48"
+          type="image/x-icon" href="/quasar.48.png">
+    <link rel="icon" sizes="32x32"
+          type="image/x-icon" href="/quasar.32.png">
+    <link rel="icon" sizes="16x16"
+          type="image/x-icon" href="/quasar.16.png">
+  </head>
+  <body>
+    <header>
+      <div id="player"></div>
+      <input type="checkbox" id="nav-toggle" class="nav-toggle">
+      <ul class="nav">
+        <li class="nav-icon"><label for="nav-toggle"><i class="fa fa-bars nav-menu-icon" aria-hidden="true"></i><i class="fa fa-times nav-close-icon" aria-hidden="true"></i></label></li>
+        <li class="nav-logo">
+          <label for="nav-toggle"><b>Quasar</b>
+        </li>
+        <li class="nav-nowplaying"><a href="#">Now Playing</a></li>
+        <!--
+        <li>Playlists</li>
+        -->
+        <li class="breadcrumb"><a href="#">Browse</a></li>
+        <li class="nav-search">
+          <form class="form-search">
+            <label>
+              <i class="fa fa-search" aria-hidden="true"></i>
+              <input type="search" placeholder="Search">
+            </label>
+          </form>
+        </li>
+      </ul>
+    </header>
+
+    <div id="body">
+      <ol class="listing" id="output">
+      </ol>
+    </div>
+    <script type="text/javascript" src="jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="handlebars.runtime-v4.0.10.js"></script>
+    <script type="text/javascript" src="quasar.templates.js"></script>
+    <script type="text/javascript" src="quasar.config.js"></script>
+    <script type="text/javascript" src="quasar.js"></script>
+  </body>
+</html>

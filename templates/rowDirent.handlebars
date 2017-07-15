@@ -1,0 +1,29 @@
+<li {{#if track}} class="row row-asdirectory"
+                  data-quasar-listing-index="{{index}}"
+    {{else}} class="row-parent-directory row-asdirectory"
+    {{/if}}>
+  {{#if track.filename}}
+    <a href="{{trackPath track 'filename'}}" class="row-play">
+    <span class="col row-flag">
+      <i class="fa fa-volume-up row-flag-nowplaying"></i>
+      <i class="fa fa-play row-flag-hover"></i>
+      &nbsp;
+    </span>
+    <span class="col row-solo">{{decodeURIComponent track.filename}}</span>
+    </a>
+  {{else}}
+    <a href="{{directoryUrl}}">
+    <span class="col row-flag">
+      {{#if track}}
+        <i class="fa fa-folder-o row-flag-subdirectory"></i>
+      {{else}}
+        <i class="fa fa-level-up fa-flip-horizontal row-flag-subdirectory"></i>{{!-- fa-reply --}}
+      {{/if}}
+      &nbsp;
+    </span>
+    <span class="col row-solo">
+      {{#if track}}{{decodeURIComponent subdir}}{{else}}Parent directory{{/if}}
+    </span>
+    </a>
+  {{/if}}
+</li>

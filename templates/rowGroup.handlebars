@@ -1,0 +1,9 @@
+<li class="row-group" data-quasar-listing-group="{{rowGroup}}">
+  <a href="{{albumUrl}}">
+    <h2>{{#if track.album}}{{track.album}}{{else if 0}}/{{decodeURIComponent track.directory}}{{else}}(No album){{/if}}</h2>
+    {{#if track.cover}}
+      <img src="{{trackPath track 'cover'}}" class="rowCover">
+    {{/if}}
+  </a>
+  <ul class="rows"></ul>
+</li>

@@ -1,0 +1,21 @@
+<li class="row row-asdirectory" data-quasar-listing-index="{{index}}">
+  <a href="{{#if indexTypeAlbum}}{{albumUrl}}{{else if indexTypeArtist}}{{artistUrl}}{{/if}}">
+    <span class="col row-flag">
+      {{#if indexTypeAlbum}}
+        <i class="fa fa-square-o"></i> {{!-- This is a terrible icon --}}
+      {{else if indexTypeArtist}}
+        <i class="fa fa-user-o"></i>
+      {{else}}
+        <i class="fa fa-folder-o row-flag-subdirectory"></i>
+      {{/if}}
+      &nbsp;
+    </span>
+    <span class="col row-solo">
+      {{#if indexTypeAlbum}}
+        {{#if track.album}}{{track.album}}{{else}}(No album){{/if}}
+      {{else if indexTypeArtist}}
+        {{#if track.artist}}{{track.artist}}{{else}}(No artist){{/if}}
+      {{else}}(Unknown index type){{/if}}
+    </span>
+  </a>
+</li>

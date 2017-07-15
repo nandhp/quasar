@@ -1,0 +1,31 @@
+<div class="playerMetaTitle">
+  {{#if track}}
+    {{#if track.title}}{{track.title}}
+    {{else}}{{decodeURIComponent track.filename}}{{/if}}
+  {{else}}
+    Not Playing
+  {{/if}}
+</div>
+<div class="playerMetaArtist">
+  {{#if track}}
+    <a href="{{artistUrl}}">
+      {{#if track.artist}}{{track.artist}}{{else}}(No artist){{/if}}
+    </a>
+  {{/if}}
+</div>
+<div class="playerMetaAlbum">
+  {{#if track}}
+    <a href="{{albumUrl}}">
+      {{#if track.album}}{{track.album}}{{else}}(No album){{/if}}
+    </a>
+  {{/if}}
+</div>
+
+<span class="playerMetaPageTitle">
+  {{#if track.artist}}{{track.artist}} - {{/if}}
+  {{#if track.title}}
+    {{track.title}}
+  {{else}}
+    {{#if track.filename}}{{decodeURIComponent track.filename}}{{/if}}
+  {{/if}}
+</span>
