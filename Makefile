@@ -1,5 +1,5 @@
 CXX=g++
-CXXFLAGS=-g -Wall #-O3
+CXXFLAGS=-g -Wall -O3
 
 all: dep quasar quasar.templates.js icons
 
