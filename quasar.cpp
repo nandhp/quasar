@@ -600,9 +600,11 @@ static inline int do_accept(void) {
 int main(int argc, char *argv[]) {
   // Open database
   sqlite3 *dbh = NULL;
-  int rc = sqlite3_open_v2("quasar.db", &dbh, SQLITE_OPEN_READONLY, NULL);
+  const char *dbfile = getenv("QUASAR_DBFILE");
+  if ( !dbfile ) dbfile = "quasar.db";
+  int rc = sqlite3_open_v2(dbfile, &dbh, SQLITE_OPEN_READONLY, NULL);
   if ( rc != SQLITE_OK ) {
-    fprintf(stderr, "sqlite open: %s\n", sqlite3_errmsg(dbh));
+    fprintf(stderr, "sqlite open: %s: %s\n", dbfile, sqlite3_errmsg(dbh));
     sqlite3_close(dbh);
     return 1;
   }
