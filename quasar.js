@@ -588,7 +588,7 @@ $(document).ready(function() {
     $(window).resize();
 });
 $(window).resize(function() {
-    var isCollapsed = $(window).width() <= 880;
+    var isCollapsed = $(window).width() <= 799;
     var $nav = $('UL.nav'), $navSearch = $nav.find('LI.nav-search');
     $navSearch.css('max-width', $nav.width() - (
         $nav.find('LI.nav-icon').outerWidth(true) +

@@ -329,7 +329,7 @@ input[type=range]::-ms-fill-upper {
 .nav-toggle {
     display: none;
 }
-@media (max-width: 880px) {
+@media (max-width: 799px) {
     .nav-toggle:checked + .nav {
         position: fixed;
         width: 100%;
@@ -537,7 +537,7 @@ input[type=range]::-ms-fill-upper {
 
 
 /* Responsive support */
-@media (max-width: 880px) {
+@media (max-width: 799px) {
     #body ol li .col:not(.row-flag) {
         min-width: auto !important;
         width: auto !important;
