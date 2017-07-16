@@ -12,7 +12,7 @@ quasar.templates.js: templates/*.handlebars
 	handlebars -f $@ $^
 
 icons: quasar.16.png quasar.32.png quasar.48.png quasar.64.png quasar.180.png
-icons: apple-touch-icon-precomposed.png
+icons: quasar.ico apple-touch-icon-precomposed.png
 
 %.png: %.png.tmp
 	pngcrush $^ $@
@@ -23,8 +23,8 @@ quasar.%.png.tmp: quasar.svg
 apple-touch-icon-precomposed.png: quasar.180.png
 	convert "$^" -background '#eee' -alpha remove -alpha off "$@"
 
-#quasar.ico:
-#	convert quasar.16.png quasar.32.png quasar.48.png quasar.ico
+quasar.ico:
+	convert quasar.16.png quasar.32.png quasar.48.png quasar.64.png quasar.ico
 
 dep: jquery-3.2.1.min.js jquery-3.2.1.min.map handlebars.runtime-v4.0.10.js Font-Awesome-4.7.0
 

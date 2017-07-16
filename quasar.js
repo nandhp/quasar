@@ -230,6 +230,8 @@ function getListing(req) {
         return PLAYER.listing;
 
     var args = parseQuery(req.substr(1));
+    args._url = req ? req : '#';
+
     var listing;
     // Compare Viewer.updateNavigation()
     var browse = args['browse'] || '';
@@ -281,7 +283,6 @@ function getListing(req) {
     }
     if ( typeof(bc) !== 'undefined' )
         args._setNavActive = function($nav) { _setBreadcrumb($nav, bc); };
-    args._url = req ? req : '#';
     listing.quasarArgs = args;
     return listing;
 }
@@ -811,6 +812,10 @@ QuasarPlayer.prototype._preloadPlayer = function(url) {
                 that.trackNext();
         }).attr('preload', 'auto');
         $(document.body).append(p);
+        // WebKit: Media elements can only start playing in response
+        // to a user gesture, so make this element eligible while we
+        // have the opportunity.
+        p.play();
     }
     // Check for player that has loaded this URL already
     for ( var i = 0; i < this.players.length; i++ ) {

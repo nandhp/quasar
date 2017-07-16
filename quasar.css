@@ -221,7 +221,6 @@ input[type=range]::-ms-fill-upper {
     margin: 0;
     padding: 0;
     border-top: 1px solid black;
-    margin: -1px 0;
 }
 .nav::after {
     content: '';
@@ -278,8 +277,10 @@ input[type=range]::-ms-fill-upper {
     border-right-width: 0;
 }
 /* Hack for proper height on High-DPI (Mac) displays */
-.nav LI.nav-search .fa-search {
+.nav .fa {
     vertical-align: middle;
+}
+.nav .nav-search .fa {
     position: relative;
     top: -2px;
 }
@@ -329,7 +330,7 @@ input[type=range]::-ms-fill-upper {
 
 /* Responsive conversion of tab bar into menu */
 .nav .nav-icon, .nav .nav-menu-icon, .nav .nav-close-icon {
-    float: right !important;
+    float: left;
     display: none;
 }
 .nav-toggle {
@@ -350,14 +351,18 @@ input[type=range]::-ms-fill-upper {
     }
     .nav-toggle:not(:checked) + .nav .nav-logo,
     .nav-toggle:not(:checked) + .nav .nav-active:not(.nav-nowplaying),
-    .nav-toggle + .nav LI.nav-icon,
     .nav-toggle:not(:checked) + .nav .nav-menu-icon,
+    .nav-toggle + .nav LI.nav-icon,
     .nav-toggle:checked + .nav .nav-close-icon {
         display: block;
+    }
+    .nav > LI {
         width: auto;
     }
-    .nav-toggle:checked + .nav LI {
+    .nav-toggle:checked + .nav LI:not(.nav-icon) {
         float: none;
+    }
+    .nav-toggle:checked + .nav LI {
         margin: 0 0 0.5em;
         border-width: 0 !important;
         max-width: 100% !important;
