@@ -889,7 +889,8 @@ QuasarPlayer.prototype.isPlaying = function() {
 };
 QuasarPlayer.prototype.play = function() {
     if ( !this.players.length || this.listingPos < 0 ) {
-        if ( VIEWER.listing && VIEWER.listing.items.length )
+        if ( VIEWER.listing && VIEWER.listing.items.length &&
+             (VIEWER.listing.displayMode||'').substr(0, 6) !== 'index:' )
             this.setListing(VIEWER.listing, 0);
         return;
     }
