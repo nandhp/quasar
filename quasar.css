@@ -277,6 +277,12 @@ input[type=range]::-ms-fill-upper {
     border-left: 1px solid black;
     border-right-width: 0;
 }
+/* Hack for proper height on High-DPI (Mac) displays */
+.nav LI.nav-search .fa-search {
+    vertical-align: middle;
+    position: relative;
+    top: -2px;
+}
 
 /* triangular breadcrumbs adapted from https://css-tricks.com/triangle-breadcrumbs/ */
 .nav li.breadcrumb a {
