@@ -908,6 +908,13 @@ QuasarPlayer.prototype.pause = function() {
 QuasarPlayer.prototype.toggle = function() {
     return this.isPlaying() ? this.pause() : this.play();
 };
+QuasarPlayer.prototype.playNoStart = function() {
+    if ( this.players.length && this.listingPos >= 0 )
+        this.play();
+};
+QuasarPlayer.prototype.toggleNoStart = function() {
+    return this.isPlaying() ? this.pause() : this.playNoStart();
+};
 
 QuasarPlayer.prototype.getTime = function() {
     if ( this.players.length <= 0 || this.listingPos < 0 )
@@ -928,6 +935,26 @@ QuasarPlayer.prototype.seekTo = function(t) {
     if ( this.players.length <= 0 )
         return;
     this.players[0].currentTime = t;
+};
+
+QuasarPlayer.prototype.seekBy = function(t) {
+    if ( this.players.length <= 0 )
+        return;
+    t += this.players[0].currentTime;
+    if ( t < 0 ) t = 0;
+    var dur = this.getDuration();
+    if ( dur >= 0 && t > dur ) t = dur;
+    this.seekTo(t);
+};
+
+QuasarPlayer.prototype.seekToFraction = function(t) {
+    if ( this.players.length <= 0 )
+        return;
+    var dur = this.getDuration();
+    if ( dur < 0 ) return;
+    if ( t < 0 ) t = 0;
+    if ( t > 1 ) t = 1;
+    this.seekTo(t * dur);
 };
 
 QuasarPlayer.prototype.trackGo = function(n) {
@@ -1010,4 +1037,116 @@ QuasarPlayer.prototype.setListing = function(listing, pos) {
 var PLAYER = null;
 $(document).ready(function() {
     PLAYER = new QuasarPlayer($('#player'));
+});
+
+// Keyboard shortcuts
+$(document).on('keydown', function(e) {
+    // Key definitions based on Windows VKs http://cherrytree.at/misc/vk.htm
+    var key = e.which;
+    var mod = e.shiftKey;
+    var modIgnore = e.ctrlKey || e.altKey || e.metaKey;
+
+    // Active element, so we can detect possible conflicts
+    var ae = document.activeElement;
+    var aet = ae ? ae.tagName.toUpperCase() : '';
+    var aety = aet === 'INPUT' ? ae.type.toLowerCase() : '';
+
+    // Media keys
+    if ( key == 176 )             // VK_MEDIA_NEXT_TRACK (Chrome)
+        PLAYER.trackNext();       //   => Next track
+    else if ( key == 177 )        // VK_MEDIA_PREV_TRACK (Chrome)
+        PLAYER.trackPrevOrSeek(); //   => Previous track
+    else if ( key == 178 )        // VK_MEDIA_STOP (Chrome)
+        PLAYER.pause();           //  => Pause
+    else if ( key == 179 )        // VK_MEDIA_PLAY_PAUSE (Chrome)
+        PLAYER.toggle();          //   => Toggle play/pause
+
+    else if ( key == 27 ) {     // Escape
+        ae.blur();
+        $('#nav-toggle').prop('checked', false);
+        return true;
+    }
+
+    // Most keybindings conflict with input controls. These ones are
+    // compatible with buttons and range controls.
+    else if ( aety && aety !== 'range' )
+        return true;
+    else if ( modIgnore ) // && (key == 37 || key == 39) )
+        // Conflicts with system shortcuts (including history navigation)
+        return true;
+
+    // Playback control
+    else if ( !mod && key == 32 )    // Spacebar
+        PLAYER.toggleNoStart();      //   => Toggle play/pause (never start)
+    else if ( !mod && key == 88 )    // "X" key
+        PLAYER.toggle();             //   => Toggle play/pause
+    else if ( (!mod && key == 67) || // "C" key
+              ( mod && key == 39) )  // Shift + Right arrow
+        PLAYER.trackNext();          //   => Next track
+    else if ( (!mod && key == 90) || // "Z" key
+              ( mod && key == 37) )  // Shift + Left arrow
+        PLAYER.trackPrevOrSeek();    //   => Previous track (or seek to 0)
+
+    // Seeking
+    else if ( !mod && key >= 48 && key <= 57 ) // 0, 1, ..., 9
+        PLAYER.seekToFraction((key-48)/10.);   //   => Seek to percentage
+    else if ( !mod && key == 190 ) // "." key => Seek + 5 seconds
+         PLAYER.seekBy(+ 5);
+    else if ( !mod && key == 188 ) // "," key => Seek - 5 seconds
+         PLAYER.seekBy(- 5);
+    else if ( !mod && key == 222 ) // "'" key => Seek +10 seconds
+         PLAYER.seekBy(+10);
+    else if ( !mod && key ==  59 ) // ";" key => Seek -10 seconds
+         PLAYER.seekBy(-10);
+    else if ( !mod && key == 221 ) // "]" key => Seek +30 seconds
+         PLAYER.seekBy(+30);
+    else if ( !mod && key == 219 ) // "[" key => Seek -30 seconds
+         PLAYER.seekBy(-30);
+
+    // Navigation keybindings
+    else if ( mod && key == 65 )                     // Shift+A (artist)
+        $('#player .playerMetaArtist A')[0].click(); //   => To current artist
+    else if ( mod && key == 66 )                     // Shift+B (browse)
+        $('.nav .breadcrumb A')[0].click();          //   => To browse
+    else if ( mod && key == 68 )                     // Shift+D (disc)
+        $('#player .playerMetaAlbum A')[0].click();  //   => To current album
+    else if ( mod && key == 78 )                     // Shift+N (Now Playing)
+        $('.nav-nowplaying A')[0].click();           //   => To Now Playing
+    else if ( !mod && key == 191 ) {                 // "/" key
+        $('#nav-toggle').prop('checked', true);      //   => Focus search
+        $('.nav-search INPUT').focus().select();
+    }
+
+    else if ( aet == 'INPUT' || aet === 'BUTTON' )
+        return true;
+
+    // Additional keybindings
+    else if ( key == 39 )       // Right arrow
+        PLAYER.seekBy(5);       //   => Seek +5 seconds
+    else if ( key == 37 )       // Left arrow
+        PLAYER.seekBy(-5);      //   => Seek -5 seconds
+    else
+        return true;
+    return false;
+
+    // Choices:
+    // * [Z][X][C] Previous/Pause/Next (near Winamp, but different),
+    //   [Space] Play/Pause, [S-Left][S-Right] Previous/Next
+    // % Seek: [1] - [0] to percentage, [,][.][;]['][[][]] by 5/10/30 seconds,
+    //   [Left][Right] by 5 seconds
+    // $ Navigation: [/] to search, [S-N]ow Playing, [S-B]rowse,
+    //               current [S-A]rtist or [S-D]isc(album)
+    //
+    // $ FUTURE: Navigation: [S-P]Playlists
+    // ^ FUTURE: [R]epeat, [S]huffle, [M]ute. Volume: [Up][Down], [-][+=]
+    // @ Reserved: [G] for advanced navigation, [H][L] for Vim, [?] for help
+    // # Viewer: [J][K] to scroll, [O] to play, [P] Enqueue (add to playList),
+    //           [A][D] go to artist/album,
+    //           [Up][Down] scroll, [Ret] enqueue (play for now), [S-Ret] play
+    // Sadly, [J][K][L] conflicts with Viewer scrolling
+    //
+    // ` % % % % % % % % % % - = <x]     ~ 1 2 3 4 5 6 7 8 9 0 _ + <x]
+    // >| q w e ^ t y u i # # % % \      >| Q W E R T Y U I O $ { } |
+    // ___ # ^ # f @ @ # # @ % % ###     ___ $ S $ F G H J K L : " ###
+    // ____ * * * v b n ^ % % $ ____     &&&& Z X C V $ $ M < > @ &&&&
 });
