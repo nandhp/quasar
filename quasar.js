@@ -512,7 +512,10 @@ Viewer.prototype.updateNavigation = function() {
         return;
 
     var args = this.listing.quasarArgs;
-    location.hash = args._url;
+    if ( location.hash === '' )
+        location.replace(args._url); // Avoid auto-redirect history entry
+    else
+        location.hash = args._url;
     if ( args._setNavActive )
         args._setNavActive($('.nav'));
 };
