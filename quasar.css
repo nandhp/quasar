@@ -457,7 +457,7 @@ input[type=range]::-ms-fill-upper {
 }
 #body .row-group H2 A {         /* Metadata hyperlink */
     color: inherit;
-    text-decoration: none;
+    text-decoration: underline;
 }
 
 /* Pages */
