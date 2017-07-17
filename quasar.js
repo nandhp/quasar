@@ -1233,3 +1233,15 @@ $(document).on('keydown', function(e) {
     // ___ # ^ # f @ @ # # @ % % ###     ___ $ S $ F G H J K L : " ###
     // ____ * * * v b n ^ % % $ ____     &&&& Z X C V $ $ M < > @ &&&&
 });
+$(document).on('keyup', function(e) {
+    if ( e.shiftKey || e.ctrlKey || e.altKey || e.metaKey )
+        return true;
+
+    var ae = document.activeElement;
+    var aet = ae ? ae.tagName.toUpperCase() : '';
+    var aety = aet === 'INPUT' ? ae.type.toLowerCase() : '';
+
+    // Spacebar should not trigger buttons
+    if ( aet == 'BUTTON' && e.which == 32 ) return false;
+    return true;
+});
