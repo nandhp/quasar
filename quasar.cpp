@@ -581,6 +581,7 @@ int query_run(Query &query, sqlite3_stmt *stmt) {
   // Additional parameters
   json_p_kv("start", &(query.start), json_t_num, "  ", 1);
   json_p_kv("count", &i, json_t_num, "  ", 1);
+  json_p_kv("requested", &(query.count), json_t_num, "  ", 1);
   //json_p_kv("total", &count, json_t_num, "  ", 1);
 
   if ( rc != SQLITE_DONE )
