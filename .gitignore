@@ -2,6 +2,7 @@
 quasar
 quasar.templates.js
 quasar.*.png
+quasar.ico
 apple-touch-icon*png
 handlebars.runtime-v*.js
 jquery-*.js

@@ -4,8 +4,8 @@
     <h1 class="page-branding"><b>Quasar</b> <sup style="font-weight: normal">BETA</sup> <!--<span style="font-size:80%;position:relative;top:-0.8ex">&beta;</span>--></h1>
   </div>
   <ol>
-    <li><a href="#browse=artist">Browse artists</a></li>
-    <li><a href="#browse=album">Browse albums</a></li>
-    <li><a href="#browse=directory&directory=">Browse directories</a></li>
+  {{#each homeItems}}
+    <li><a href="{{this.url}}">{{this.title}}</a></li>
+  {{/each}}
   </ol>
 </li>

@@ -142,7 +142,12 @@ QuasarListing.prototype.next = function() {
               });
 };
 QuasarListing.prototype._req_result = function(obj) {
-    if ( obj.count == 0 && !obj.error )
+    if ( !obj.error &&
+         (obj.count == 0 ||
+          ((obj.requested||0) > 0 && obj.count < obj.requested)) )
+        // If there is no error and no items were returned, or fewer
+        // items were returned than requested, we must have reached
+        // the end.
         this.doneLoading = true;
     var i = this.items.length;
     this.req_error = obj.error;
@@ -221,6 +226,73 @@ function _setBreadcrumb($nav, items) {
     });
 }
 
+var HOMEITEMS = [
+    {'url': '#browse=artist', 'title': "Browse artists"},
+    {'url': '#browse=album', 'title': "Browse albums"},
+    {'url': '#browse=directory&directory=', 'title': "Browse directories"},
+];
+
+var DEFAULTSORT = 'album,directory,tracknumber,filename';
+var URLPARSERS = [
+
+    // Search
+    function (args) {
+        if ( typeof(args['q']) === 'undefined' )
+            return null;
+        args._setNavActive = function($nav) {
+            $nav.find('.nav-search').addClass('nav-active');
+            $nav.find('.nav-search input[type=search]').val(args['q']);
+        };
+        return new QuasarListing({'any': args['q'].split(/\s+/),
+                                  'sort': DEFAULTSORT});
+    },
+
+    // Browse by album
+    function (args) {
+        if ( (args['browse']||'') !== 'album' )
+            return null;
+        var bc = [['#browse=album', "Albums"]];
+        args._setNavActive = function($nav) { _setBreadcrumb($nav, bc); };
+        if ( typeof(args['album']) !== 'undefined' ) {
+            bc[bc.length] = [args._url, args['album']||"(No album)"]
+            return new QuasarListing({'mode': 'exact', 'sort': DEFAULTSORT,
+                                      'directory': args['directory'],
+                                      'artist': args['artist'],
+                                      'album': args['album']}, 'album');
+        }
+        return new QuasarListing({'mode': 'exact', 'sort': DEFAULTSORT,
+                                  'group': 'album,directory'},
+                                 'index:album');
+    },
+
+    // Browse by artist
+    function (args) {
+        if ( (args['browse']||'') !== 'artist' )
+            return null;
+        var bc = [['#browse=artist', "Artist"]];
+        args._setNavActive = function($nav) { _setBreadcrumb($nav, bc); };
+        if ( typeof(args['artist']) !== 'undefined' ) {
+            bc[bc.length] = [args._url, args['artist']||"(No artist)"]
+            return new QuasarListing({'mode': 'exact', 'sort': DEFAULTSORT,
+                                      'artist': args['artist']}, 'album');
+        }
+        return new QuasarListing({'mode': 'exact', 'sort': 'artist',
+                                  'group': 'artist'}, 'index:artist');
+    },
+
+    // Browse by directory
+    function (args) {
+        if ( (args['browse']||'') !== 'directory' )
+            return null;
+        var bc = [[args._url, '/' + (args['directory']||'')]];
+        args._setNavActive = function($nav) { _setBreadcrumb($nav, bc); };
+        return new QuasarListing({'mode': 'browse',
+                                  'sort': 'filename,directory',
+                                  'directory': args['directory']||''},
+                                 'dir');
+    },
+];
+
 function getListing(req) {
     /* No change if already viewing this listing. */
     if ( VIEWER.listing && req === VIEWER.listing.quasarArgs._url )
@@ -232,57 +304,17 @@ function getListing(req) {
     var args = parseQuery(req.substr(1));
     args._url = req ? req : '#';
 
-    var listing;
-    // Compare Viewer.updateNavigation()
-    var browse = args['browse'] || '';
-    var defaultSort = 'album,directory,tracknumber,filename'
-    var bc = undefined;
-    if ( typeof(args['q']) !== 'undefined' ) {
-        listing = new QuasarListing({'any': args['q'].split(/\s+/),
-                                     'sort': defaultSort});
-        args._setNavActive = function($nav) {
-            $nav.find('.nav-search').addClass('nav-active');
-            $nav.find('.nav-search input[type=search]').val(args['q']);
-        };
-    }
-    else if ( browse === 'album' ) {
-        bc = [['#browse=album', "Albums"]];
-        if ( typeof(args['album']) !== 'undefined' ) {
-            listing = new QuasarListing({'mode': 'exact', 'sort': defaultSort,
-                                         'directory': args['directory'],
-                                         'artist': args['artist'],
-                                         'album': args['album']}, 'album');
-            bc[bc.length] = [args._url, args['album']||"(No album)"]
-        }
-        else
-            listing = new QuasarListing({'mode': 'exact', 'sort': defaultSort,
-                                         'group': 'album,directory'},
-                                        'index:album');
-    }
-    else if ( browse === 'artist' ) {
-        bc = [['#browse=artist', "Artists"]];
-        if ( typeof(args['artist']) !== 'undefined' ) {
-            listing = new QuasarListing({'mode': 'exact', 'sort': defaultSort,
-                                         'artist': args['artist']}, 'album');
-            bc[bc.length] = [args._url, args['artist']||"(No artist)"]
-        }
-        else
-            listing = new QuasarListing({'mode': 'exact', 'sort': 'artist',
-                                         'group': 'artist'}, 'index:artist');
-    }
-    else if ( browse == 'directory' ) {
-        listing = new QuasarListing({'mode': 'browse',
-                                     'sort': 'filename,directory',
-                                     'directory': args['directory']||''},
-                                    'dir');
-        bc = [[args._url, '/' + (args['directory']||'')]];
-    }
-    else {
+    // Try each URL parser in order
+    var listing = null;
+    for ( var i = 0; !listing && i < URLPARSERS.length; i++ )
+        listing = URLPARSERS[i](args);
+
+    // If URL could not be parsed, use the default page
+    if ( !listing ) {
         listing = new QuasarPageListing(Handlebars.templates.browseHome);
-        bc = [];
+        args._setNavActive = function($nav) { _setBreadcrumb($nav, []); };
     }
-    if ( typeof(bc) !== 'undefined' )
-        args._setNavActive = function($nav) { _setBreadcrumb($nav, bc); };
+
     listing.quasarArgs = args;
     return listing;
 }
@@ -414,7 +446,7 @@ Viewer.prototype.extendView = function(start) {
         var $row;
 
         if ( asPage ) {
-            $row = $(this.listing.page());
+            $row = $(this.listing.page({'homeItems': HOMEITEMS}));
             var branding = getBranding(true);
             $row.find('.page-branding').empty().append(branding[0]);
             if ( !branding[2] )
@@ -614,6 +646,7 @@ $(document).ready(function () {
     $(window).trigger('hashchange');
 });
 $(document).scroll(function() {
+    // Don't autorequest if request already in progress
     if ( !VIEWER || !VIEWER.listing || VIEWER.listing.req ) return true;
     function isPlaceholderInView(e) {
         var $e = $(e), pos = $e.offset().top - $(document).scrollTop();
@@ -816,6 +849,7 @@ QuasarPlayer.prototype._preloadPlayer = function(url) {
         // to a user gesture, so make this element eligible while we
         // have the opportunity.
         p.play();
+        p.pause();
     }
     // Check for player that has loaded this URL already
     for ( var i = 0; i < this.players.length; i++ ) {
