@@ -165,7 +165,7 @@ NowPlayingListing.prototype = Object.create(Listing.prototype);
 NowPlayingListing.prototype.next = function() { };
 
 var NOWPLAYING = null;
-$(document).ready(function() {
+quasarReady(function() {
     NOWPLAYING = NowPlayingListing();
 });
 */
@@ -225,6 +225,41 @@ function _setBreadcrumb($nav, items) {
         $bc.append($('<a>').attr('href', this[0]).text(this[1]));
     });
 }
+
+function quasarReady(f) {
+    if ( typeof(f) === 'boolean' ) {
+        this.configLoaded = true;
+        quasarReady();
+        return;
+    }
+    else if ( typeof(f) === 'undefined' ) {
+        if ( this.done || loadingPlugins > 0 || !this.configLoaded )
+            return;
+        $(document).trigger('quasarReady');
+        this.done = true;
+    }
+    else if ( this.done )
+        f();
+    else
+        $(document).on('quasarReady', f);
+}
+quasarReady.done = false;
+quasarReady.configLoaded = false;
+
+var loadingPlugins = 0;
+function loadPlugin(url) {
+    var e = document.createElement('SCRIPT');
+    e.src = url;
+    $(e).on('load', function() {
+        loadingPlugins--;
+        quasarReady();
+    });
+    loadingPlugins++;
+    document.body.appendChild(e);
+}
+$(document).ready(function () {
+    quasarReady();
+});
 
 var HOMEITEMS = [
     {'url': '#browse=artist', 'title': "Browse artists"},
@@ -611,7 +646,7 @@ function getBranding(useLong) {
         (typeof(BRANDING_LOGO) === 'undefined' ? true : BRANDING_LOGO);
     return [$branding, branding_text, branding_logo];
 }
-$(document).ready(function() {
+quasarReady(function() {
     {
         /* Apply branding */
         var branding = getBranding(false);
@@ -641,7 +676,7 @@ $(window).resize(function() {
 });
 var VIEWER = null;
 var STATE = {};
-$(document).ready(function () {
+quasarReady(function () {
     VIEWER = new Viewer();
     $(window).trigger('hashchange');
 });
@@ -1074,7 +1109,7 @@ QuasarPlayer.prototype.setListing = function(listing, pos) {
 
 // Instantiation of global player
 var PLAYER = null;
-$(document).ready(function() {
+quasarReady(function() {
     PLAYER = new QuasarPlayer($('#player'));
 });
 
