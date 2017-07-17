@@ -82,6 +82,10 @@ Listing.prototype._checkWaiters = function(include_next) {
     if ( skipped > 0 && skipped == this.waiters.length ) {
         this.next();
     }
+    else if ( VIEWER && VIEWER.listing && this === VIEWER.listing &&
+              VIEWER.isOutdated() )
+        // Viewer has out-of-date view of this listing
+        VIEWER.placeholderActivate();
 };
 
 // Helper function to load data for the listing
@@ -381,10 +385,15 @@ function urlForDirectory(track, args) {
         (args||'');
 }
 
+Viewer.prototype.isOutdated = function() {
+    return this.listing &&
+        this.$l.find('.row').length < this.listing.items.length;
+}
 Viewer.prototype.placeholderActivate = function() {
     var that = this;
     var p = this.$l.find('.row').length;
-    this.listing.get(-1, function() { that.extendView(p); });
+    this.listing.get(p < this.listing.items.length ? p : -1,
+                     function() { that.extendView(p); });
 };
 Viewer.prototype.placeholderEnable = function() {
     var that = this;
