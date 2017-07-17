@@ -558,6 +558,14 @@ Viewer.prototype.extendView = function(start) {
     }
     var rc = i - start;
 
+    // Don't lose track of the current track if the player has gotten
+    // ahead of us. Check for a missing row-nowplaying item to ensure
+    // it does not interfere with scrolling.
+    if ( PLAYER && PLAYER.listing === this.listing &&
+         !this.$l.find('.row-nowplaying').length ) {
+        this.updateNowPlaying(PLAYER);
+    }
+
     // Insert an error message if we encountered an error
     if ( this.listing.req_error )
         this.errorEnable("Error loading more items: " + this.listing.req_error,
