@@ -273,7 +273,8 @@ public:
 
     // Parse query string
     std::string sql("SELECT directory, filename, title, artist, album, "
-                    "cover, genre, tracknumber, tracktotal, year, duration " +
+                    "cover, genre, tracknumber, tracktotal, "
+                    "discnumber, disctotal, year, duration " +
                     fake_sorts +
                     "FROM track "
                     "LEFT JOIN album USING (albumid) "
@@ -379,7 +380,8 @@ public:
       sql += ("SELECT subdir(directory, ?" + to_string(browse_binding) +
               ") AS subdir, NULL AS filename, NULL AS title, NULL AS artist, "
               "  NULL AS album, NULL AS cover, NULL as genre, "
-              "  NULL as tracknumber, NULL as tracktotal, NULL as year, "
+              "  NULL as tracknumber, NULL as tracktotal, "
+              "  NULL as discnumber, NULL as disctotal, NULL as year, "
               "  NULL as duration " + fake_sorts +
               "FROM track LEFT JOIN album USING (albumid) "
               "WHERE subdir NOT NULL GROUP BY subdir ");
@@ -444,12 +446,12 @@ public:
 const std::string Query::Column::error_name = "";
 const std::string Query::Column::names[] = {
   "any", "directory", "filename", "title", "album", "artist", "genre",
-  "tracknumber"
+  "tracknumber", "discnumber"
 };
 const Query::Column::Flag Query::Column::flags[] = {
   /* any */flag_none, /* directory */flag_raw, /* filename */flag_raw,
   /* title */flag_none, /* album */flag_none, /* artist */flag_none,
-  /* genre */flag_none, /* tracknumber */flag_none
+  /* genre */flag_none, /* tracknumber */flag_none, /* discnumber */flag_none
 };
 const int Query::Column::n = sizeof(Query::Column::names) /
             sizeof(Query::Column::names[0]);

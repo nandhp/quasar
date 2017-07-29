@@ -271,7 +271,7 @@ var HOMEITEMS = [
     {'url': '#browse=directory&directory=', 'title': "Browse directories"},
 ];
 
-var DEFAULTSORT = 'album,directory,tracknumber,filename';
+var DEFAULTSORT = 'album,directory,discnumber,tracknumber,filename';
 var URLPARSERS = [
 
     // Search

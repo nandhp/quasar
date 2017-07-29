@@ -84,6 +84,8 @@ my %tables = (
         ['artistid', 'INTEGER'],
         ['tracknumber', 'INTEGER'],
         ['tracktotal', 'INTEGER'], # Usually an album property; not guaranteed
+        ['discnumber', 'INTEGER'],
+        ['disctotal', 'INTEGER'], # Also usually an album property
         ['year', 'INTEGER'],
         ['genreid', 'INTEGER'],
         ['duration', 'INTEGER NOT NULL'],
@@ -248,6 +250,10 @@ sub wanted {
         my ($track, $ntracks) = (get_tag($info, 'Track') ||
                                  get_tag($info, 'TrackNumber') ||
                                  '') =~ /^0*(\d+?)(?:\s*(?:\/|of)\s*0*(\d+?))?$/;
+        my ($disc, $ndiscs) = (get_tag($info, 'PartOfSet') ||
+                               get_tag($info, 'Disc') ||
+                               get_tag($info, 'DiscNumber') ||
+                               '') =~ /^0*(\d+?)(?:\s*(?:\/|of)\s*0*(\d+?))?$/;
         my $year = get_tag($info, 'Year');
         $_ = (defined($_) && $_ =~ /^\s*(\d+)\s*$/) ? int($1) : undef
             foreach $track, $ntracks, $year;
@@ -257,6 +263,8 @@ sub wanted {
         $obj{album} = get_tag($info, 'Album');
         $obj{tracknumber} = $track;
         $obj{tracktotal} = $ntracks;
+        $obj{discnumber} = $disc;
+        $obj{disctotal} = $ndiscs;
         $obj{year} = $year;
         $obj{genre} = get_tag($info, 'Genre');
         $obj{duration} = $dur;
