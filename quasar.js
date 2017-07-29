@@ -1075,6 +1075,7 @@ QuasarPlayer.prototype.trackGo = function(n) {
             else {
                 that.listingPos = -1;
                 that.updateMetadata(track);
+                that.players[0].pause();
             }
         }
     });
@@ -1253,3 +1254,45 @@ $(document).on('keyup', function(e) {
     if ( aet == 'BUTTON' && e.which == 32 ) return false;
     return true;
 });
+
+function debug() {
+    if ( this.debugTimeout )
+        clearTimeout(this.debugTimeout);
+    this.debugTimeout = null;
+    var el = document.getElementById('debugout');
+    if ( !el ) {
+        el = document.createElement('PRE');
+        el.id = 'debugout';
+        el.style.position = 'fixed';
+        el.style.bottom = '5px';
+        el.style.left = '5px';
+        el.style.border = '1px solid black';
+        el.style.background = 'white';
+        el.style.padding = '5px';
+        el.style.minWidth = '30em';
+        el.style.margin = '0';
+        el.style.opacity = 0.75;
+        document.body.appendChild(el);
+    }
+    var t = "";
+    var minper = 100;
+    for (var pi = 0; pi < PLAYER.players.length; pi++ ) {
+        if ( pi ) t += "\n\n";
+        t += "Player #" + (pi+1);
+        var p = PLAYER.players[pi];
+        var b = p.buffered;
+        for ( var i = 0; i < b.length; i++ ) {
+            var t1 = b.start(i);
+            var t2 = b.end(i);
+            var tp = Math.round(100*(t2-t1)/p.duration);
+            t += "\n  Buffer range #" + (i+1) + ' ' + t1 + ' - ' + t2 + ' (' + tp + '%)';
+            if ( tp < minper ) minper = tp;
+        }
+        t += "\n  Position: " + p.currentTime +  " of " + p.duration + ' (' + Math.round(100*p.currentTime/p.duration) + '%)';
+    }
+    if ( !t ) t = "(No players yet)";
+    if ( minper < 99 || Math.floor(new Date().getTime()/1000) % 60 == 0 )
+        console.log(t);
+    el.innerText = t;
+    this.debugTimeout = setTimeout(debug, 1000);
+}
