@@ -1,6 +1,13 @@
 CXX=g++
 CXXFLAGS=-g -Wall -O3
 
+ifndef PNGCRUSH
+  PNGCRUSH:=$(shell command -v pngcrush 2>/dev/null)
+endif
+ifndef PNGCRUSH
+  PNGCRUSH:=mv
+endif
+
 all: dep quasar quasar.templates.js icons
 
 quasar: LDFLAGS=-lfcgi -lsqlite3 -luriparser
@@ -15,7 +22,10 @@ icons: quasar.16.png quasar.32.png quasar.48.png quasar.64.png quasar.180.png
 icons: quasar.ico apple-touch-icon-precomposed.png
 
 %.png: %.png.tmp
-	pngcrush $^ $@
+ifeq "$(PNGCRUSH)" "mv"
+	$(warning Optional dependency pngcrush is not installed)
+endif
+	$(PNGCRUSH) $^ $@
 
 quasar.%.png.tmp: quasar.svg
 	inkscape -e $@ -w $* $<
