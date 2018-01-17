@@ -1,8 +1,7 @@
 Quasar
 ======
 
-<img src="https://raw.githubusercontent.com/nandhp/quasar/master/quasar.svg"
-     width="64" alt="Quasar logo" />
+![Quasar Logo](https://user-images.githubusercontent.com/404497/35063426-b19cf18a-fb8c-11e7-8720-d75bd89138c6.png)
 
 A self-hosted browser-based media player for a personal MP3 collection.
 
