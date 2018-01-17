@@ -650,7 +650,7 @@ Handlebars.registerHelper('decodeURIComponent', function(s) {
 
 function getBranding(useLong) {
     if ( !BRANDING )
-        return [$('.nav-logo LABEL > *'), document.title, true]
+        return [$('.nav-logo LABEL > *').clone(), document.title, true]
     var orig_branding = useLong && typeof(LONG_BRANDING) !== 'undefined' ?
         LONG_BRANDING : BRANDING;
     var $branding = $(orig_branding);
