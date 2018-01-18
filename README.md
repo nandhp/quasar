@@ -12,8 +12,12 @@ A self-hosted browser-based media player for a personal MP3 collection.
 
 * Responsive design for mobile use
 
+* Keyboard shortcuts
+
 * Works with music formats supported by your browser, including MP3
   and M4A (no transcoding)
+
+![Quasar screenshots](https://user-images.githubusercontent.com/404497/35079531-c67d8b82-fbcd-11e7-80cb-1158db3512ae.png)
 
 Dependencies
 ------------
@@ -67,3 +71,21 @@ Assuming `QUASAR = '/cgi-bin/quasar'` in your `quasar.config.js`:
     python -m CGIHTTPServer
 
 Then open `http://localhost:8000/quasar.html`.
+
+Keyboard shortcuts
+------------------
+
+Key                                           | Action
+--------------------------------------------- | ------------------------
+<kbd>Space</kbd> or <kbd>X</kbd>              | Toggle playback
+<kbd>C</kbd> or <kbd>Shift</kbd>+<kbd>→</kbd> | Next
+<kbd>Z</kbd> or <kbd>Shift</kbd>+<kbd>←</kbd> | Previous
+digits <kbd>0</kbd> - <kbd>9</kbd>            | Seek to position
+<kbd>[</kbd> and <kbd>]</kbd> | Seek 30 seconds back and forward, respectively
+<kbd>;</kbd> and <kbd>'</kbd> | Seek 10 seconds back and forward, respectively
+<kbd>,</kbd> and <kbd>.</kbd>  | Seek 5 seconds back and forward, respectively
+<kbd>/</kbd>                                  | Search
+<kbd>Shift</kbd> + <kbd>A</kbd>               | Go to current artist
+<kbd>Shift</kbd> + <kbd>B</kbd>               | Go to browse tab
+<kbd>Shift</kbd> + <kbd>D</kbd>               | Go to current album
+<kbd>Shift</kbd> + <kbd>N</kbd>               | Go to Now Playing
