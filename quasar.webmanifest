@@ -4,7 +4,8 @@
   "description": "Music player",
 
 
-  "display": "fullscreen",
+  "background_color": "white",
+  "display": "standalone",
   "icons": [
     {
       "src": "quasar.180.png",

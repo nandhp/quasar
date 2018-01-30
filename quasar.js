@@ -669,6 +669,13 @@ quasarReady(function() {
         var branding = getBranding(false);
         $('.nav-logo > LABEL').empty().append(branding[0]);
         document.title = branding[1];
+        /* Set manifest URL */
+        if ( MANIFEST ) {
+            var manifestEl = document.createElement('LINK');
+            manifestEl.setAttribute('rel', 'manifest');
+            manifestEl.setAttribute('href', MANIFEST);
+            document.head.appendChild(manifestEl);
+        }
     }
     $(window).resize();
 });
